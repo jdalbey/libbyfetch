@@ -44,7 +44,7 @@ The third field is your PIN (if required) If your library doesn't require a PIN 
 ### Requirements.txt
 
 ### Steps 
-1. Clone the repository: `git clone https://github.com/yourusername/yourproject.git` 
+1. Clone the repository: `git clone https://github.com/jdalbey/libbyfetch.git` 
 2. Install dependencies: `pip install -r requirements.txt`
 
 ## Usage 
