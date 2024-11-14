@@ -56,6 +56,7 @@ def do_login_steps(driver):
             input_field = WebDriverWait(driver, 10).until( EC.presence_of_element_located((By.XPATH, input_xpath)) )
             # Fill in the value
             input_field.send_keys(library_cardnum)
+            time.sleep(1)
         except Exception as e:
             print(f"An error occurred entering card number: {e}")
 
