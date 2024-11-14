@@ -24,15 +24,6 @@ The purpose of this program is not to circumvent library policies or DRM constra
 3. Find the URL in the browser address bar.  The desired abbreviation appears after "`https://`" and before "`.overdrive.com`"
 4. For example, the URL for the San Francisco Public Library is https://sfpl.overdrive.com so the abbreviation is "`sfpl`".
 
-### Limitations
-* Currently only works with Chrome.
-* Error checking is rudimentary at best.  I built this for my personal use so it isn't production quality code.
-* This program relies on a browser automation tool so it's inherently fragile.  If the libbyapp.com website changes even the smallest bit this program could break.
-* Tested only on Linux.  May work with other systems that have Python installed.
-* Tested only with audiobooks with English-language titles.  No attempt has been made at internationalization.
-* The displayed list of audiobooks truncates the titles in order to fit a 3-column format.
-* The downloaded MP3 files are placed in the current directory.  There is no option to specify a download folder.
-
 ### Configuration File
 You must edit the configuration file named "`library_card_config.txt`" to provide your own library card information.
 The file is plain text and should contain two or three values separated by commas with no spaces.
@@ -43,6 +34,9 @@ The third field is your PIN (if required) If your library doesn't require a PIN 
 
 ### Requirements
 `selenium, selenium-wire, pycurl`
+### Steps 
+1. Clone the repository: `git clone https://github.com/jdalbey/libbyfetch.git` 
+2. Install dependencies: `pip install selenium selenium-wire pycurl`
 
 Note that it may be necessary to uninstall a dependency, blinker ver 1.9.0 and downgrade to 1.7.0
 Here are the detailed steps, using pip.  
@@ -50,9 +44,6 @@ Here are the detailed steps, using pip.
 `pip uninstall blinker` Uninstall the module  
 `pip install blinker==1.7.0` Install blinker with the specific version we want  
 `pip show blinker` Should now have version 1.7 installed.
-### Steps 
-1. Clone the repository: `git clone https://github.com/jdalbey/libbyfetch.git` 
-2. Install dependencies: `pip install -r requirements.txt`
 
 ## Usage 
 To run the program, execute the following command in your console:
@@ -96,44 +87,49 @@ Removing scrap file:  The_Bad_Beginning_Part04.mp3
 That's all Folks!
 ```
 
+### Limitations
+* Currently only works with Chrome.
+* Error checking is rudimentary at best.  I built this for my personal use so it isn't production quality code.
+* This program relies on a browser automation tool so it's inherently fragile.  If the libbyapp.com website changes even the smallest bit this program could break.
+* Tested only on Linux.  May work with other systems that have Python installed.
+* Tested only with audiobooks with English-language titles.  No attempt has been made at internationalization.
+* The displayed list of audiobooks truncates the titles in order to fit a 3-column format.
+* The downloaded MP3 files are placed in the current directory.  There is no option to specify a download folder.
+
 ## Error Messages
 
-`Missing or malformed configuration file
-Malformed configuration file
-`
+
+* `Missing or malformed configuration file`
+* `Malformed configuration file`  
 Couldn't read the configuration file data. Check that the file is formatted correctly as described above.
 
-`Sorry, can't find details for library 
-Sorry, your library card (or PIN) could not be verified.
-Login seems to have failed. Please verify these credentials and retry: 
-Login failed, sorry.
-`
+* `Sorry, can't find details for library`
+* `Sorry, your library card (or PIN) could not be verified.`
+* `Login seems to have failed. Please verify these credentials and retry:`
+* `Login failed, sorry.`  
 Unable to log you in to Libby.  Verify that the configuration file data is correct.  Sometimes Libby just hiccups and won't recognize the credentials.  It's almost always a transient issue re-running the script will be successful. 
 
-`Card not verified, probably a Libby error, we will retry in a few seconds.
-`
+```Card not verified, probably a Libby error, we will retry in a few seconds.```  
 Libby frequently gets confused and fails to verify a valid card.  The program will retry 3 times before giving up.
 
-`It appears you have no audiobooks on loan at this library
-` 
+```It appears you have no audiobooks on loan at this library```   
 Unable to find any audiobooks on the Loans page.  
 
-`Sorry your choice is not in the list
-`
+```Sorry your choice is not in the list```  
 A numeric entry was made that was outside the range of the displayed list.
 
-`Unable to find 'Sign In With My Card' button.
-An error occurred entering card number:
-An error occurred finding button:
-An error occurred filling PIN:
-An error occurred finding Sign In button: 
-Loans page seems to not have loaded.  Try again.
-Exception retrieving book
-Failed to delete scrap file - probably programmer error
-Abnormal exit.
-` These errors most likely result from flaws in the program.  Try running the program again after a minute and if the error message persists please notify the developers. 
+* `Unable to find 'Sign In With My Card' button.`
+* `An error occurred entering card number:`
+* `An error occurred finding button:`
+* `An error occurred filling PIN:`
+* `An error occurred finding Sign In button:`
+* `Loans page seems to not have loaded.  Try again.`
+* `Exception retrieving book`
+* `Failed to delete scrap file - probably programmer error`
+* `Abnormal exit.`  
+These errors most likely result from flaws in the program.  Try running the program again after a minute and if the error message persists please notify the developers. 
 
-`Choice must be a number. Quitting.`
+```Choice must be a number. Quitting.```  
 When selecting a book title from the list of available audiobooks you must enter the number associated with the list item.  Entering a zero or an alphabetic character will terminate the program (which can be a handy shortcut way to exit at times.)
 ## Disclaimer
 
