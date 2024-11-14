@@ -41,7 +41,10 @@ The first field is the library abbreviation (see above).
 The second field is your library card number.
 The third field is your PIN (if required) If your library doesn't require a PIN omit this field.
 
-### Requirements.txt
+### Requirements
+`selenium, selenium-wire, pycurl`
+
+Note that it may be necessary to uninstall a dependency, blinker ver 1.9.0 and downgrade to 1.7.0
 
 ### Steps 
 1. Clone the repository: `git clone https://github.com/jdalbey/libbyfetch.git` 
