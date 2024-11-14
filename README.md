@@ -36,16 +36,20 @@ The purpose of this program is not to circumvent library policies or DRM constra
 ### Configuration File
 You must edit the configuration file named "`library_card_config.txt`" to provide your own library card information.
 The file is plain text and should contain two or three values separated by commas with no spaces.
-Example:   `sfpl,12341234123412,4321`
-The first field is the library abbreviation (see above).
-The second field is your library card number.
+Example:   `sfpl,12341234123412,4321`  
+The first field is the library abbreviation (see above).  
+The second field is your library card number.  
 The third field is your PIN (if required) If your library doesn't require a PIN omit this field.
 
 ### Requirements
 `selenium, selenium-wire, pycurl`
 
 Note that it may be necessary to uninstall a dependency, blinker ver 1.9.0 and downgrade to 1.7.0
-
+Here are the detailed steps, using pip.  
+`pip show blinker` This should reveal the version is 1.9.0  
+`pip uninstall blinker` Uninstall the module  
+`pip install blinker==1.7.0` Install blinker with the specific version we want  
+`pip show blinker` Should now have version 1.7 installed.
 ### Steps 
 1. Clone the repository: `git clone https://github.com/jdalbey/libbyfetch.git` 
 2. Install dependencies: `pip install -r requirements.txt`
