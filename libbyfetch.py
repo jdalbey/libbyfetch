@@ -21,7 +21,6 @@ def wait_for_button():
     button_xpath = "//button[contains(@class, 'interview-answer-action') and contains(@class, 'halo') and span[contains(@class, 'interview-answer-action-flex')] and .//span[@role='text']]"
     try:  # Find the button using XPath
         button = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.XPATH, button_xpath)))
-        print(f"(diagnostic) Button text says: {button.text}")
     except TimeoutException as e:
         print("Internal error - expected button not found after entering card number.")
         abnormal_exit(e)
@@ -458,7 +457,7 @@ if __name__ == "__main__":
         from selenium.webdriver.chrome.options import Options as ChromeOptions
         options = ChromeOptions()
         options.add_argument("--headless")
-        driver = webdriver.Chrome() #options=options)
+        driver = webdriver.Chrome(options=options)
         do_login_steps(driver)
         # Get user's book choice
         book_divs, choice = choose_book(driver)
