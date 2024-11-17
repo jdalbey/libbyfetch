@@ -39,24 +39,105 @@ The first field is the library abbreviation (see above).
 The second field is your library card number.  
 The third field is your PIN (or password). If your library doesn't require a PIN omit this field.
 
-## Installation
+## Installation (Linux)
+
+Step 1: Install Python (if necessary)
+
+Python 3.7 or higher must be installed. To verify:
+    `python3 --version`
  
-Step 1: Download the Latest Release
+Step 2: Download the Latest Release
 
   * Visit the [Releases](https://github.com/jdalbey/libbyfetch/releases) page.
   * Download the zip file for the latest release.
 
-Step 2: Unzip the file:
+Step 3: Unzip the file:
 
     unzip libbyfetch-1.0.2.zip
     cd libbyfetch-1.0.2
 
-Step 3: Install Dependencies
+Step 4: Install Dependencies
 
 Install the required Python modules:
 
     python3 -m pip install selenium selenium-wire pycurl
 
+
+## Installation (Windows)
+
+Step 1: Install Python (if necessary)
+
+Python 3.7 or higher must be installed:
+    Download Python from python.org.
+    During installation, ensure you check the box "Add Python to PATH".
+    Verify the installation:
+
+    `python3 --version`
+
+pip (Python's package manager) should be included with Python. Verify it by running:
+
+    `python3 -m pip --version`
+
+If it's missing, reinstall Python and ensure "pip" is selected during the installation.
+
+
+Step 2: Download the Latest Release
+
+  * Visit the [Releases](https://github.com/jdalbey/libbyfetch/releases) page. 
+  * Download the zip file for the latest release.
+
+Step 3: Unzip the file:
+
+Right-click the downloaded zip file.
+Select `Extract All...` and choose a destination folder.
+Open the extracted folder.
+
+Step 4: Install Dependencies
+
+Open a Command Prompt in the extracted folder by right-clicking inside the folder while holding Shift and select "Open PowerShell window here" or "Open Command Prompt window here".
+Run the following command to install dependencies:
+
+    `python3 -m pip install selenium selenium-wire pycurl`
+
+## Installation (MacOS)
+
+Step 1: Install Python (if necessary)
+
+Python 3.7 or higher must be installed:
+Check if Python 3 is already installed:
+
+`python3 --version`
+
+If not installed, download and install Python from python.org.
+
+Alternatively, install Python using Homebrew:
+
+        brew install python
+
+pip (Python's package manager) should be included with Python. Verify it by running:
+
+    `python3 -m pip --version`
+
+If it's missing, reinstall Python or follow these instructions.
+
+Step 2: Download the Latest Release
+
+  * Visit the [Releases](https://github.com/jdalbey/libbyfetch/releases) page.
+  * Download the zip file for the latest release.
+
+Step 3: Unzip the file:
+
+Open Finder and navigate to the downloaded file.
+Double-click the zip file to extract it.
+
+Step 4: Install Dependencies
+
+Open the extracted folder in Terminal by right-clicking the folder and select "Services > New Terminal at Folder" (or open Terminal and navigate to the folder manually using cd).
+Install the required Python modules:
+
+    `python -m pip install selenium selenium-wire pycurl`
+
+### Dependency note
 Note that it may be necessary to uninstall a dependency, `blinker` ver 1.9.0 and downgrade to 1.7.0
 Here are the detailed steps, using pip.  
 `pip show blinker` This should reveal the version is 1.9.0  
