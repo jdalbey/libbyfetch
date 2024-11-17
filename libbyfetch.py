@@ -7,7 +7,7 @@
 # pip install selenium selenium-wire pycurl
 # Note: must uninstall Blinker 1.9 and install v1.7
 import time, os, pycurl, traceback
-from selenium.common import TimeoutException
+from selenium.common import TimeoutException, NoSuchElementException
 from seleniumwire import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
@@ -16,6 +16,46 @@ from selenium.webdriver.common.keys import Keys
 
 #global variable for webdriver
 driver = None
+
+def wait_for_button():
+    button_xpath = "//button[contains(@class, 'interview-answer-action') and contains(@class, 'halo') and span[contains(@class, 'interview-answer-action-flex')] and .//span[@role='text']]"
+    try:  # Find the button using XPath
+        button = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.XPATH, button_xpath)))
+        print(f"(diagnostic) Button text says: {button.text}")
+    except TimeoutException as e:
+        print("Internal error - expected button not found after entering card number.")
+        abnormal_exit(e)
+    return button
+
+# Process the <LI> tags that have the branch library items
+def process_branches_list(li_tags):
+    # Extract the names from each list item
+    branch_names = []
+    list_elements = []
+    for item in li_tags:
+        list_elements.append(item)
+        branch_names.append(item.text)
+    list_count = len(branch_names)
+    # Display the list
+    print ("Branch libraries are:")
+    # Using enumerate to print each item with a sequence number starting at 1
+    for index, item in enumerate(branch_names, start=1):
+        print(f"    {index}. {item}")
+    try:
+        choice = int(input(f"Where do you use your library card (Enter a number 1-{list_count})? "))
+        # Don't allow zero
+        if choice < 1:
+            raise IndexError
+        selected_item = list_elements[choice - 1]
+        # Click on the list_element for the user's selected library
+        selected_item.click()
+        print (f"Okay, signing in to {branch_names[choice-1]}.")
+    except ValueError:
+        print ("Choice must be a number. Quitting.")
+        terminate()
+    except IndexError:
+        print ("Choice not in valid range. Quitting.")
+        terminate()
 
 # Browse to the library page and perform the actions to login to libbyapp.com
 def do_login_steps(driver):
@@ -43,18 +83,51 @@ def do_login_steps(driver):
             button = WebDriverWait(driver, 20).until(EC.element_to_be_clickable((By.XPATH, button_xpath)))
             # Locate the prompt element
             span_element = driver.find_element(By.CSS_SELECTOR, '.interview-episode-say span')
-            # Get the text from the span element
-            span_text = span_element.text
-            if span_text.endswith("details about this library."):
-                print (f"Sorry, can't find details for library '{library_id}'")
-                print ("Please confirm the library abbreviation and try again.")
-                terminate()
-            else:
-                button.click()
-                print("Starting signin with your library card.")
-        except Exception as e:
+        except NoSuchElementException as ex:
             print(f"Unable to find 'Sign In With My Card' button.")
+            print(f"{ex.msg}")
             terminate()
+        # Get the text from the span element
+        span_text = span_element.text
+        if span_text.endswith("I’m having trouble fetching details about this library."):
+            print (f"Sorry, can't find details for library '{library_id}'")
+            print ("Please confirm the library abbreviation and try again.")
+            terminate()
+        else:
+            # Find the full library name
+            label_xpath = "//h1[contains(@class, 'screen-library-home-head')]"
+            try:
+                span_element = driver.find_element(By.XPATH, label_xpath)
+                library_full_name = span_element.text.split('\n')[1]
+                # Click the Sign In button
+                button.click()
+                print(f"Starting signin to {library_full_name}.")
+            except NoSuchElementException as ex:
+                print (f"Unable to find full library name where expected.")
+                print (f"{ex.msg.split('}')[0]}")
+                terminate()
+
+        # Check for regional library
+        # class Interview-episode-say  span role=text Let's sign into your account.  Where do you use your'
+        #list_xpath = "//ul[contains(@class, 'auth-ils-list-home')]"
+        #ul_tags = driver.find_elements(By.XPATH, "//ul[contains(@class, 'auth-ils-list-home')]")
+        #buttons = driver.find_elements(By.XPATH, "//button[contains(@class, 'halo')]")
+        #li_tags = driver.find_elements(By.TAG_NAME, "li")
+        # Locate all <li> tags inside <ul> elements with a specific class
+
+        # Find the branch libraries
+        # extract all the <LI> tags whose parent has the given CSS selector
+        li_tags = driver.find_elements(By.CSS_SELECTOR, "ul.auth-ils-list > li")
+        if li_tags:
+            # See if a MORE button is present
+            button_more_path = "//button[contains(@class, 'shibui-button') and contains(@class, 'halo') and .//span[@role='text' and substring(text(), string-length(text()) - string-length('More') + 1) = 'More']]"
+            buttons_more = driver.find_elements(By.XPATH, button_more_path)
+            # only click it if we found it.
+            if buttons_more:
+                buttons_more[0].click()  # click the "more" button
+                time.sleep(1) # wait for the collapsed list items to expand
+            # Go process the list of tags
+            process_branches_list(li_tags)
 
         # Find and fill the Card Number input field
         input_xpath = "//input[@class='shibui-form-input-control shibui-form-field-control' and @placeholder='card number']"
@@ -70,11 +143,18 @@ def do_login_steps(driver):
             print(f"An error occurred entering card number: {e}")
             terminate()
 
-        # If the configuration has a PIN, enter it
-        if library_pin is not None:
+        button = wait_for_button()
+
+        # After entering the card number,
+        #    A bad card number displays "We could not verify..." and a "Try Again" button.
+        #    A successful signin displays the library card and
+        #         a "Next" button if no PIN is required
+        #         a "Sign In" button if PIN is needed
+        # Does this card need a PIN / password?
+        if button.text == "Sign In":   # "Next\n→" means no PIN needed
             # Find and fill the PIN input field
             input_id = "shibui-form-input-control-0002"
-            try:  # Wait for the input field to be present
+            try:  # Find the input field for PIN
                 input_field = WebDriverWait(driver, 10).until( EC.visibility_of_element_located((By.ID, input_id)) )
                 # Fill in the value
                 input_field.send_keys(library_pin)
@@ -87,35 +167,38 @@ def do_login_steps(driver):
                 traceback.print_exc()
                 terminate()
 
-        # if no PIN continue here
+            # After entering pin, wait for button to appear
+            button = wait_for_button()
+
+        # if no PIN required, continue here
         retry_count = 0
         signin_complete = False
         # Repeat until signin succeeds, or the retry count is exceeded
         while not signin_complete and retry_count <= 3:
-            # "Next" button will appear at this point.
-            button_xpath = "//button[contains(@class, 'interview-answer-action') and contains(@class, 'halo') and span[contains(@class, 'interview-answer-action-flex')] and .//span[@role='text']]"
-            try: # Find the button using XPath
-                button = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.XPATH, button_xpath)))
+            try:
                 # Locate the prompt element
                 span_element = driver.find_element(By.CSS_SELECTOR, '.interview-episode-say span')
                 # Get the text from the prompt element
                 span_text = span_element.text
                 # Determine which prompt appeared
-                if span_text.startswith("Unfortunately"):
-                    print("Card not verified, probably a Libby error, we will retry in a few seconds.")
+                if span_text.startswith("Unfortunately") or span_text.startswith("We could not connect to your library"):
+                    print (span_text)
+                    print("This is probably a Libby error, we will retry in a few seconds.")
                     retry_count += 1
                     time.sleep(5)
                     print ("Retrying...")
                     # Click "Try Again" to make the card number and pin fields reappear.
                     button.click()
+                    button = wait_for_button()
                 elif span_text.startswith("We could not verify your card"):
                     print (f"Sorry, your library card (or PIN) could not be verified.")
                     print(f"Please confirm these credentials and try again: {library_config}")
                     terminate()
-                elif span_text.startswith("Enter"):
+                elif span_text.startswith("Enter"):  #"your library account details"
+                    # The form has appeared again just click it.
                     button.click()
-                else:  #span_text.startswith("Okay")
-                    button.click()
+                else:  #span_text.startswith("Okay, you're signed in." library card is displayed
+                    button.click()  # Click the "Next\n→" button
                     print("Sign In completed.")
                     signin_complete = True
             except Exception as e:
@@ -222,6 +305,7 @@ def choose_book(driver):
 
         # Prompt the user to enter the number of the desired title
         choice = int(input("Enter the number of the desired title: "))
+        # TODO don't allow zero
         return book_divs, choice
     except ValueError:
         print ("Choice must be a number. Quitting.")
@@ -374,7 +458,7 @@ if __name__ == "__main__":
         from selenium.webdriver.chrome.options import Options as ChromeOptions
         options = ChromeOptions()
         options.add_argument("--headless")
-        driver = webdriver.Chrome(options=options)
+        driver = webdriver.Chrome() #options=options)
         do_login_steps(driver)
         # Get user's book choice
         book_divs, choice = choose_book(driver)
