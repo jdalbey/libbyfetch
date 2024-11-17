@@ -7,7 +7,7 @@
 # pip install selenium selenium-wire pycurl
 # Note: must uninstall Blinker 1.9 and install v1.7
 import time, os, pycurl, traceback
-from selenium.common import TimeoutException
+from selenium.common import TimeoutException, NoSuchElementException
 from seleniumwire import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
@@ -43,18 +43,28 @@ def do_login_steps(driver):
             button = WebDriverWait(driver, 20).until(EC.element_to_be_clickable((By.XPATH, button_xpath)))
             # Locate the prompt element
             span_element = driver.find_element(By.CSS_SELECTOR, '.interview-episode-say span')
-            # Get the text from the span element
-            span_text = span_element.text
-            if span_text.endswith("details about this library."):
-                print (f"Sorry, can't find details for library '{library_id}'")
-                print ("Please confirm the library abbreviation and try again.")
-                terminate()
-            else:
-                button.click()
-                print("Starting signin with your library card.")
-        except Exception as e:
+        except NoSuchElementException as ex:
             print(f"Unable to find 'Sign In With My Card' button.")
+            print(f"{ex.msg}")
             terminate()
+        # Get the text from the span element
+        span_text = span_element.text
+        if span_text.endswith("I’m having trouble fetching details about this library."):
+            print (f"Sorry, can't find details for library '{library_id}'")
+            print ("Please confirm the library abbreviation and try again.")
+            terminate()
+        else:
+            # Find the full library name
+            label_xpath = "//h1[contains(@class, 'screen-library-home-head')]"
+            try:
+                span_element = driver.find_element(By.XPATH, label_xpath)
+                library_full_name = span_element.text.split('\n')[1]
+                button.click()
+                print(f"Starting signin to {library_full_name}.")
+            except NoSuchElementException as ex:
+                print (f"Unable to find full library name where expected.")
+                print (f"{ex.msg.split('}')[0]}")
+                terminate()
 
         # Find and fill the Card Number input field
         input_xpath = "//input[@class='shibui-form-input-control shibui-form-field-control' and @placeholder='card number']"
