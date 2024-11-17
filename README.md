@@ -2,15 +2,22 @@
 
 Libby fetch is a program for downloading MP3 audiobooks from libbyapp.com website
 
+## Features
+1. The program will signin to the LibbyApp.com website using the user's library card.
+2. The program will display a list of current audiobooks on loan
+3. The user enters a book title from the list
+4. The program downloads one or more MP3 files that comprise the audiobook.
+
 ## Background
 
 When backpacking I sometimes enjoy listening to audiobooks. My preferred device for listening is a portable MP3 player (specifically, SanDisk Sport Clip Go). It's small, lightweight, easy to operate, with long battery life and doesn't require an internet connection. In the past I have been able to check out books from the library and download them as MP3 files using OverDrive Media Console. This year Overdrive stopped supporting the media console and transitioned to a new application called Libby. In November of 2024 they are going to discontinue MP3 downloads entirely.  "_There are no plans for Libby to support downloading audiobooks to a desktop computer and transferring them to an MP3 player."_
 ([Source](https://resources.overdrive.com/libby-faqs/)) ([Read more](https://kcls.org/news/overdrive-desktop-app-and-mp3-support-ends-on-november-13/)). 
 
 The purpose of this program is not to circumvent library policies or DRM constraints. It's definitely for personal use only and not to distribute the audiobooks in any form. I simply want to listen to the audiobook that I have legitimately obtained from the library on a device of my choosing that better meets my needs than a smartphone.
-## Installation
-### Prerequisites:
-* Python 3.10
+
+## Prerequisites:
+* Python 3.7 or higher. Check your Python version:
+     `python3 --version`
 * Chrome (or Chromium) web browser.
 * An Overdrive account at a participating library.
 * An audiobook that has been checked out from your library and appears in your Overdrive account on the Loans page.
@@ -30,15 +37,27 @@ The file is plain text and should contain two or three values separated by comma
 Example:   `sfpl,12341234123412,4321`  
 The first field is the library abbreviation (see above).  
 The second field is your library card number.  
-The third field is your PIN (if required) If your library doesn't require a PIN omit this field.
+The third field is your PIN (or password). If your library doesn't require a PIN omit this field.
 
-### Requirements
-`selenium, selenium-wire, pycurl`
-### Steps 
-1. Clone the repository: `git clone https://github.com/jdalbey/libbyfetch.git` 
-2. Install dependencies: `pip install selenium selenium-wire pycurl`
+## Installation
+ 
+Step 1: Download the Latest Release
 
-Note that it may be necessary to uninstall a dependency, blinker ver 1.9.0 and downgrade to 1.7.0
+  * Visit the [Releases](https://github.com/jdalbey/libbyfetch/releases) page.
+  * Download the zip file for the latest release.
+
+Step 2: Unzip the file:
+
+    unzip libbyfetch-1.0.2.zip
+    cd libbyfetch-1.0.2
+
+Step 3: Install Dependencies
+
+Install the required Python modules:
+
+    python3 -m pip install selenium selenium-wire pycurl
+
+Note that it may be necessary to uninstall a dependency, `blinker` ver 1.9.0 and downgrade to 1.7.0
 Here are the detailed steps, using pip.  
 `pip show blinker` This should reveal the version is 1.9.0  
 `pip uninstall blinker` Uninstall the module  
@@ -46,13 +65,10 @@ Here are the detailed steps, using pip.
 `pip show blinker` Should now have version 1.7 installed.
 
 ## Usage 
-To run the program, execute the following command in your console:
-`python libbyfetch.py`
-## Features
-1. The program will signin to the LibbyApp.com website using the user's library card.
-2. The program will display a list of current audiobooks on loan
-3. The user enters a book title from the list
-4. The program downloads one or more MP3 files that comprise the audiobook.
+To run the program, execute the following command:
+
+  `python3 libbyfetch.py`
+
 ## Example 
 ```%python libbyfetch.py
 Initializing LibbyApp
