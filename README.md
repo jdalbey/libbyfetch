@@ -1,6 +1,6 @@
 # Libby Fetch
 
-Libby fetch is a program for downloading MP3 audiobooks from libbyapp.com website
+Libby Fetch is a program for downloading MP3 audiobooks from libbyapp.com website
 
 ## Features
 1. The program will signin to the LibbyApp.com website using the user's library card.
@@ -67,75 +67,25 @@ Install the required Python modules:
 
 Step 1: Install Python (if necessary)
 
-Python 3.7 or higher must be installed:
-    Download Python from python.org.
-    During installation, ensure you check the box "Add Python to PATH".
-    Verify the installation:
-
-    `python3 --version`
-
-pip (Python's package manager) should be included with Python. Verify it by running:
-
-    `python3 -m pip --version`
-
-If it's missing, reinstall Python and ensure "pip" is selected during the installation.
-
-
 Step 2: Download the Latest Release
-
   * Visit the [Releases](https://github.com/jdalbey/libbyfetch/releases) page. 
   * Download the zip file for the latest release.
 
-Step 3: Unzip the file:
+Step 3: Unzip the file
 
-Right-click the downloaded zip file.
-Select `Extract All...` and choose a destination folder.
-Open the extracted folder.
-
-Step 4: Install Dependencies
-
-Open a Command Prompt in the extracted folder by right-clicking inside the folder while holding Shift and select "Open PowerShell window here" or "Open Command Prompt window here".
-Run the following command to install dependencies:
-
-    `python3 -m pip install selenium selenium-wire pycurl`
+Step 4: Install Dependencies (with pip)
 
 ## Installation (MacOS)
 
 Step 1: Install Python (if necessary)
 
-Python 3.7 or higher must be installed:
-Check if Python 3 is already installed:
-
-`python3 --version`
-
-If not installed, download and install Python from python.org.
-
-Alternatively, install Python using Homebrew:
-
-        brew install python
-
-pip (Python's package manager) should be included with Python. Verify it by running:
-
-    `python3 -m pip --version`
-
-If it's missing, reinstall Python or follow these instructions.
-
 Step 2: Download the Latest Release
-
-  * Visit the [Releases](https://github.com/jdalbey/libbyfetch/releases) page.
+  * Visit the [Releases](https://github.com/jdalbey/libbyfetch/releases) page. 
   * Download the zip file for the latest release.
 
-Step 3: Unzip the file:
+Step 3: Unzip the file
 
-Open Finder and navigate to the downloaded file.
-Double-click the zip file to extract it.
-
-Step 4: Install Dependencies
-
-Open the extracted folder in Terminal by right-clicking the folder and select "Services > New Terminal at Folder" (or open Terminal and navigate to the folder manually using cd).
-Install the required Python modules:
-
-    `python -m pip install selenium selenium-wire pycurl`
+Step 4: Install Dependencies (with pip)
 
 ### Dependency note
 Note that it may be necessary to uninstall a dependency, `blinker` ver 1.9.0 and downgrade to 1.7.0
@@ -152,35 +102,28 @@ To run the program, execute the following command:
 
 ## Example 
 ```%python libbyfetch.py
-Initializing LibbyApp
+Initializing LibbyApp.
 Reading library card configuration file.
 Loading library page for 'sfpl'
-Starting signin with your library card.
-Card Number set successfully.
-'Next' Button clicked.
+Starting signin to San Francisco Public Library.
+Library card number entered.
 PIN entered.
-'Sign In' Button clicked.
 Sign In completed.
 Loans page loaded.
-1. The Bad Beginning       2. The Stinky Cheese Man   3. The Boxcar Children Beg
-4. The Sleepless           5. And Tango Makes Three   6. The Three-Body Problem 
-Enter the number of the desired title: 1
-Open Audiobook button clicked.
+1. Crow Mary               2. Ask Mr. Bear            3. Black Wolf             
+4. The Bad Beginning       5. The Three-Body Problem                            
+Enter the number of the desired title: 2
+Opening Audiobook.
 Retrieving audiobook url...
 waiting
 waiting
-waiting
-Ready to fetch audio book The Bad Beginning
-The_Bad_Beginning_Part01.mp3
+Ready to fetch audio book Ask Mr. Bear.
+Ask_Mr._Bear_Part01.mp3
 Download progress:  0%  10%  20%  30%  40%  50%  60%  70%  80%  90%  100% 
-The_Bad_Beginning_Part02.mp3
-Download progress:  0%  10%  20%  30%  40%  50%  60%  70%  80%  90%  100% 
-The_Bad_Beginning_Part03.mp3
-Download progress:  0%  10%  20%  30%  40%  50%  60%  70%  80%  90%  100% 
-The_Bad_Beginning_Part04.mp3
+Ask_Mr._Bear_Part02.mp3
 Download progress: 
-Fetch completed.  4 files downloaded.
-Removing scrap file:  The_Bad_Beginning_Part04.mp3
+Fetch completed.  2 files downloaded.
+Removing scrap file:  Ask_Mr._Bear_Part02.mp3
 That's all Folks!
 ```
 
@@ -188,46 +131,11 @@ That's all Folks!
 * Currently only works with Chrome.
 * Error checking is rudimentary at best.  I built this for my personal use so it isn't production quality code.
 * This program relies on a browser automation tool so it's inherently fragile.  If the libbyapp.com website changes even the smallest bit this program could break.
-* Tested only on Linux.  May work with other systems that have Python installed.
+* Tested only on Linux. Some users report being able to make it work on Windows.
 * Tested only with audiobooks with English-language titles.  No attempt has been made at internationalization.
 * The displayed list of audiobooks truncates the titles in order to fit a 3-column format.
 * The downloaded MP3 files are placed in the current directory.  There is no option to specify a download folder.
 
-## Error Messages
-
-
-* `Missing or malformed configuration file`
-* `Malformed configuration file`  
-Couldn't read the configuration file data. Check that the file is formatted correctly as described above.
-
-* `Sorry, can't find details for library`
-* `Sorry, your library card (or PIN) could not be verified.`
-* `Login seems to have failed. Please verify these credentials and retry:`
-* `Login failed, sorry.`  
-Unable to log you in to Libby.  Verify that the configuration file data is correct.  Sometimes Libby just hiccups and won't recognize the credentials.  It's almost always a transient issue re-running the script will be successful. 
-
-```Card not verified, probably a Libby error, we will retry in a few seconds.```  
-Libby frequently gets confused and fails to verify a valid card.  The program will retry 3 times before giving up.
-
-```It appears you have no audiobooks on loan at this library```   
-Unable to find any audiobooks on the Loans page.  
-
-```Sorry your choice is not in the list```  
-A numeric entry was made that was outside the range of the displayed list.
-
-* `Unable to find 'Sign In With My Card' button.`
-* `An error occurred entering card number:`
-* `An error occurred finding button:`
-* `An error occurred filling PIN:`
-* `An error occurred finding Sign In button:`
-* `Loans page seems to not have loaded.  Try again.`
-* `Exception retrieving book`
-* `Failed to delete scrap file - probably programmer error`
-* `Abnormal exit.`  
-These errors most likely result from flaws in the program.  Try running the program again after a minute and if the error message persists please notify the developers. 
-
-```Choice must be a number. Quitting.```  
-When selecting a book title from the list of available audiobooks you must enter the number associated with the list item.  Entering a zero or an alphabetic character will terminate the program (which can be a handy shortcut way to exit at times.)
 ## Disclaimer
 
 This software is provided without any warranty of any kind. The authors make no guarantees, express or implied, regarding the functionality or performance of the software. 
