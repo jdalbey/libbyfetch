@@ -82,6 +82,9 @@ def do_login_steps(driver):
             button = WebDriverWait(driver, 20).until(EC.element_to_be_clickable((By.XPATH, button_xpath)))
             # Locate the prompt element
             span_element = driver.find_element(By.CSS_SELECTOR, '.interview-episode-say span')
+        except TimeoutException as ex:
+            print ("Page load timed out, probably a temporary network error.  Please try again.")
+            terminate()
         except NoSuchElementException as ex:
             print(f"Unable to find 'Sign In With My Card' button.")
             print(f"{ex.msg}")
@@ -106,15 +109,7 @@ def do_login_steps(driver):
                 print (f"{ex.msg.split('}')[0]}")
                 terminate()
 
-        # Check for regional library
-        # class Interview-episode-say  span role=text Let's sign into your account.  Where do you use your'
-        #list_xpath = "//ul[contains(@class, 'auth-ils-list-home')]"
-        #ul_tags = driver.find_elements(By.XPATH, "//ul[contains(@class, 'auth-ils-list-home')]")
-        #buttons = driver.find_elements(By.XPATH, "//button[contains(@class, 'halo')]")
-        #li_tags = driver.find_elements(By.TAG_NAME, "li")
-        # Locate all <li> tags inside <ul> elements with a specific class
-
-        # Find the branch libraries
+        # Check for regional library - see if a list of branch libraries exists
         # extract all the <LI> tags whose parent has the given CSS selector
         li_tags = driver.find_elements(By.CSS_SELECTOR, "ul.auth-ils-list > li")
         if li_tags:
@@ -140,7 +135,7 @@ def do_login_steps(driver):
             time.sleep(1)
         except Exception as e:
             print(f"An error occurred entering card number: {e}")
-            terminate()
+            abnormal_exit()
 
         button = wait_for_button()
 
@@ -155,16 +150,20 @@ def do_login_steps(driver):
             input_id = "shibui-form-input-control-0002"
             try:  # Find the input field for PIN
                 input_field = WebDriverWait(driver, 10).until( EC.visibility_of_element_located((By.ID, input_id)) )
+                if library_pin == None:
+                    raise ValueError
                 # Fill in the value
                 input_field.send_keys(library_pin)
                 time.sleep(1)
                 input_field.send_keys(Keys.ENTER)
                 print("PIN entered.")
                 time.sleep(1)
-            except Exception as e:
-                print(f"An error occurred filling PIN:")
-                traceback.print_exc()
+            except ValueError as e:
+                print (f"Missing PIN in config file, quitting.")
                 terminate()
+            except Exception as e:
+                print(f"An unknown error occurred completing PIN field")
+                abnormal_exit(e)
 
             # After entering pin, wait for button to appear
             button = wait_for_button()
