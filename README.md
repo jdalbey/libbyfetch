@@ -1,6 +1,6 @@
 # Libby Fetch
 
-Libby fetch is a program for downloading MP3 audiobooks from libbyapp.com website
+Libby Fetch is a program for downloading MP3 audiobooks from libbyapp.com website
 
 ## Features
 1. The program will signin to the LibbyApp.com website using the user's library card.
@@ -38,6 +38,7 @@ Example:   `sfpl,12341234123412,4321`
 The first field is the library abbreviation (see above).  
 The second field is your library card number.  
 The third field is your PIN (or password). If your library doesn't require a PIN omit this field.
+Multiple libraries are supported by adding additional lines to the configuration file.
 
 ## Installation (Linux)
 
@@ -154,6 +155,9 @@ To run the program, execute the following command:
 ```%python libbyfetch.py
 Initializing LibbyApp
 Reading library card configuration file.
+Available library systems are:
+    1. sfpl
+Choose a library id (number): 1
 Loading library page for 'sfpl'
 Starting signin with your library card.
 Card Number set successfully.
@@ -188,7 +192,7 @@ That's all Folks!
 * Currently only works with Chrome.
 * Error checking is rudimentary at best.  I built this for my personal use so it isn't production quality code.
 * This program relies on a browser automation tool so it's inherently fragile.  If the libbyapp.com website changes even the smallest bit this program could break.
-* Tested only on Linux.  May work with other systems that have Python installed.
+* Tested only on Linux.  Community reports it may work with other systems that have Python installed e.g. Windows.
 * Tested only with audiobooks with English-language titles.  No attempt has been made at internationalization.
 * The displayed list of audiobooks truncates the titles in order to fit a 3-column format.
 * The downloaded MP3 files are placed in the current directory.  There is no option to specify a download folder.
@@ -199,7 +203,7 @@ That's all Folks!
 * `Missing or malformed configuration file`
 * `Malformed configuration file`  
 Couldn't read the configuration file data. Check that the file is formatted correctly as described above.
-
+* `Choice not in valid range.  Quitting.`
 * `Sorry, can't find details for library`
 * `Sorry, your library card (or PIN) could not be verified.`
 * `Login seems to have failed. Please verify these credentials and retry:`
