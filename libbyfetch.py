@@ -64,7 +64,25 @@ def do_login_steps(driver):
         library_config = []
         # Read library card configuration info: library code, card number, and PIN
         f = open(config_filename, 'r')
-        library_config = f.readline().split(",")
+        # Read in library system lines to a list and strip empty lines
+        libsystemslist = [line for line in f.readlines() if line.strip()]
+        
+        print ("\nAvailable library systems are:")
+        for index, item in enumerate(libsystemslist, start=1):
+             lib_id = item.split(",")[0]   
+             print(f"    {index}. {lib_id}")                
+        try: 
+            choice = int(input(f"\nChoose a library id (number): "))
+            if choice < 1 or choice > len(libsystemslist):
+                raise IndexError
+        except ValueError:
+            print ("Choice must be a number.  Quitting.")
+            terminate()
+        except IndexError:
+            print ("Choice not in valid range.  Quitting.")
+            terminate()
+                   
+        library_config = libsystemslist[choice-1].split(",")
         library_id = library_config[0].strip()
         library_cardnum = library_config[1].strip()
         library_pin = None
