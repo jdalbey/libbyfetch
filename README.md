@@ -11,7 +11,7 @@ Libby Fetch is a program for downloading MP3 audiobooks from libbyapp.com websit
 ## Background
 
 When backpacking I sometimes enjoy listening to audiobooks. My preferred device for listening is a portable MP3 player (specifically, SanDisk Sport Clip Go). It's small, lightweight, easy to operate, with long battery life and doesn't require an internet connection. In the past I have been able to check out books from the library and download them as MP3 files using OverDrive Media Console. This year Overdrive stopped supporting the media console and transitioned to a new application called Libby. In November of 2024 they are going to discontinue MP3 downloads entirely.  "_There are no plans for Libby to support downloading audiobooks to a desktop computer and transferring them to an MP3 player."_
-([Source](https://resources.overdrive.com/libby-faqs/)) ([Read more](https://kcls.org/news/overdrive-desktop-app-and-mp3-support-ends-on-november-13/)). 
+([Source](https://resources.overdrive.com/libby-faqs/)) ([Read more](https://kcls.org/news/overdrive-desktop-app-and-mp3-support-ends-on-november-13/)).
 
 The purpose of this program is not to circumvent library policies or DRM constraints. It's definitely for personal use only and not to distribute the audiobooks in any form. I simply want to listen to the audiobook that I have legitimately obtained from the library on a device of my choosing that better meets my needs than a smartphone.
 
@@ -34,9 +34,9 @@ The purpose of this program is not to circumvent library policies or DRM constra
 ### Configuration File
 You must edit the configuration file named "`library_card_config.txt`" to provide your own library card information.
 The file is plain text and should contain two or three values separated by commas with no spaces.
-Example:   `sfpl,12341234123412,4321`  
-The first field is the library abbreviation (see above).  
-The second field is your library card number.  
+Example:   `sfpl,12341234123412,4321`
+The first field is the library abbreviation (see above).
+The second field is your library card number.
 The third field is your PIN (or password). If your library doesn't require a PIN omit this field.
 
 ## Installation (Linux)
@@ -45,7 +45,7 @@ Step 1: Install Python (if necessary)
 
 Python 3.7 or higher must be installed. To verify:
     `python3 --version`
- 
+
 Step 2: Download the Latest Release
 
   * Visit the [Releases](https://github.com/jdalbey/libbyfetch/releases) page.
@@ -60,7 +60,7 @@ Step 4: Install Dependencies
 
 Install the required Python modules:
 
-    python3 -m pip install selenium selenium-wire pycurl
+    python3 -m pip install -r requirements.txt
 
 
 ## Installation (Windows)
@@ -68,7 +68,7 @@ Install the required Python modules:
 Step 1: Install Python (if necessary)
 
 Step 2: Download the Latest Release
-  * Visit the [Releases](https://github.com/jdalbey/libbyfetch/releases) page. 
+  * Visit the [Releases](https://github.com/jdalbey/libbyfetch/releases) page.
   * Download the zip file for the latest release.
 
 Step 3: Unzip the file
@@ -80,7 +80,7 @@ Step 4: Install Dependencies (with pip)
 Step 1: Install Python (if necessary)
 
 Step 2: Download the Latest Release
-  * Visit the [Releases](https://github.com/jdalbey/libbyfetch/releases) page. 
+  * Visit the [Releases](https://github.com/jdalbey/libbyfetch/releases) page.
   * Download the zip file for the latest release.
 
 Step 3: Unzip the file
@@ -89,18 +89,18 @@ Step 4: Install Dependencies (with pip)
 
 ### Dependency note
 Note that it may be necessary to uninstall a dependency, `blinker` ver 1.9.0 and downgrade to 1.7.0
-Here are the detailed steps, using pip.  
-`pip show blinker` This should reveal the version is 1.9.0  
-`pip uninstall blinker` Uninstall the module  
-`pip install blinker==1.7.0` Install blinker with the specific version we want  
+Here are the detailed steps, using pip.
+`pip show blinker` This should reveal the version is 1.9.0
+`pip uninstall blinker` Uninstall the module
+`pip install blinker==1.7.0` Install blinker with the specific version we want
 `pip show blinker` Should now have version 1.7 installed.
 
-## Usage 
+## Usage
 To run the program, execute the following command:
 
   `python3 libbyfetch.py`
 
-## Example 
+## Example
 ```%python libbyfetch.py
 Initializing LibbyApp.
 Reading library card configuration file.
@@ -110,8 +110,8 @@ Library card number entered.
 PIN entered.
 Sign In completed.
 Loans page loaded.
-1. Crow Mary               2. Ask Mr. Bear            3. Black Wolf             
-4. The Bad Beginning       5. The Three-Body Problem                            
+1. Crow Mary               2. Ask Mr. Bear            3. Black Wolf
+4. The Bad Beginning       5. The Three-Body Problem
 Enter the number of the desired title: 2
 Opening Audiobook.
 Retrieving audiobook url...
@@ -119,9 +119,9 @@ waiting
 waiting
 Ready to fetch audio book Ask Mr. Bear.
 Ask_Mr._Bear_Part01.mp3
-Download progress:  0%  10%  20%  30%  40%  50%  60%  70%  80%  90%  100% 
+Download progress:  0%  10%  20%  30%  40%  50%  60%  70%  80%  90%  100%
 Ask_Mr._Bear_Part02.mp3
-Download progress: 
+Download progress:
 Fetch completed.  2 files downloaded.
 Removing scrap file:  Ask_Mr._Bear_Part02.mp3
 That's all Folks!
@@ -138,9 +138,9 @@ That's all Folks!
 
 ## Disclaimer
 
-This software is provided without any warranty of any kind. The authors make no guarantees, express or implied, regarding the functionality or performance of the software. 
+This software is provided without any warranty of any kind. The authors make no guarantees, express or implied, regarding the functionality or performance of the software.
 
-This software is not affliated, endorsed or certified by OverDrive. 
+This software is not affliated, endorsed or certified by OverDrive.
 
 ## License
 This project is licensed under the MIT License - see the LICENSE file for details.
