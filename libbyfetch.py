@@ -199,7 +199,8 @@ def obtain_book_url(book_divs, choice):
         magic_phrase = "Fmt425-Part"  # a unique phrase that identifies Libby's request for an MP3
         cookies = None
         book_url = ""
-        while (cookies == None):
+        retry_count = 0
+        while cookies == None and retry_count < 10:
             time.sleep(2)
             print (f"waiting")
             for request in driver.requests:
@@ -209,6 +210,17 @@ def obtain_book_url(book_divs, choice):
                     if book_url.find(magic_phrase) > 0:
                         cookies = request.headers["cookie"]
                         break
+            retry_count += 1
+        # If we have retried too many times, print error and exit
+        # Fixes Issue #17
+        if retry_count == 10:
+            # Locate the prompt element
+            span_element = driver.find_element(By.CSS_SELECTOR, '.interview-episode-say span')
+            # Get the text from the prompt element
+            span_text = span_element.text
+            print ("Timed out waiting for audiobook url.")
+            print (f"Page says: {span_text}")
+            terminate()
         return book_url, cookies
 
     except Exception as e:
