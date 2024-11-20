@@ -7,19 +7,26 @@
 # pip install selenium selenium-wire pycurl
 # Note: must uninstall Blinker 1.9 and install v1.7
 import time, os, pycurl, traceback
-from selenium.common import TimeoutException, NoSuchElementException
+from selenium.common import WebDriverException, TimeoutException, NoSuchElementException, NoSuchDriverException
 from seleniumwire import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.keys import Keys
+import timeout_decorator
+
 
 #global variable for webdriver
 driver = None
 
 # Normal program termination
 def terminate():
-    driver.quit()
+    global driver
+    if driver: 
+        try: 
+            driver.quit() 
+        except: 
+            pass
     exit()
 
 # Abnormal termination
@@ -28,17 +35,16 @@ def abnormal_exit(e):
     print ("Exception type: ",type(e))
     print (f"Message: {e}")
     traceback.print_exc()
-    driver.quit()
-    exit(-1)
+    terminate()
 
 # Wait for the button that appears during login: 'Next' or 'Try Again'
 def wait_for_button():
     button_xpath = "//button[contains(@class, 'interview-answer-action') and contains(@class, 'halo') and span[contains(@class, 'interview-answer-action-flex')] and .//span[@role='text']]"
     button = None
     try:  # Find the button using XPath
-        button = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.XPATH, button_xpath)))
+        button = WebDriverWait(driver, 15).until(EC.element_to_be_clickable((By.XPATH, button_xpath)))
     except TimeoutException as e:
-        print("Internal error - expected button not found after entering card number.")
+        print("Internal error - timeout waiting for 'Next' button.")
         abnormal_exit(e)
     return button
 
@@ -230,7 +236,7 @@ def obtain_book_url(book_divs, choice):
 # Display list of books and get user's selection
 # @return a list of div elements for the books
 # @return an integer the user chose from the list
-def choose_book(driver):
+def choose_book():
     try:
         # Navigate to the page listing audiobooks on loan
         driver.get("http://libbyapp.com/shelf/loans/default,audiobook")
@@ -300,7 +306,7 @@ def process_branches_list(li_tags):
         terminate()
 
 # Browse to the library page and perform the actions to login to libbyapp.com
-def do_login_steps(driver):
+def do_login_steps():
     config_filename = "library_card_config.txt"
     try:
         print ("Reading library card configuration file.")
@@ -317,7 +323,7 @@ def do_login_steps(driver):
 
         print (f"Loading library page for '{library_id}'")
         driver.get(f"https://libbyapp.com/library/{library_id}")
-        WebDriverWait(driver, 10)
+        WebDriverWait(driver, 15)
 
         # Find the "Sign In" button by its class name and text content
         button_xpath = "//button[contains(@class, 'interview-answer-action') and contains(@class, 'halo') and .//span[@role='text' and (text()='Sign In With My Card' or text()='Try Again')]]"
@@ -370,13 +376,13 @@ def do_login_steps(driver):
         # Find and fill the Card Number input field
         input_xpath = "//input[@class='shibui-form-input-control shibui-form-field-control' and @placeholder='card number']"
         try:  # Wait for the input field to be present
-            input_field = WebDriverWait(driver, 10).until( EC.presence_of_element_located((By.XPATH, input_xpath)) )
+            input_field = WebDriverWait(driver, 15).until( EC.presence_of_element_located((By.XPATH, input_xpath)) )
             # Fill in the value
             input_field.send_keys(library_cardnum)
-            time.sleep(1)
+            time.sleep(0.5)
             input_field.send_keys(Keys.ENTER)
             print ("Library card number entered.")
-            time.sleep(1)
+            time.sleep(0.5)
         except Exception as e:
             print(f"An error occurred entering card number: {e}")
             abnormal_exit()
@@ -398,10 +404,10 @@ def do_login_steps(driver):
                     raise ValueError
                 # Fill in the value
                 input_field.send_keys(library_pin)
-                time.sleep(1)
+                time.sleep(0.5)
                 input_field.send_keys(Keys.ENTER)
                 print("PIN entered.")
-                time.sleep(1)
+                time.sleep(0.5)
             except ValueError as e:
                 print (f"Missing PIN in config file, quitting.")
                 terminate()
@@ -462,22 +468,43 @@ def do_login_steps(driver):
         print (type(e))
         abnormal_exit(e)
 
-# Entry point for the application
-if __name__ == "__main__":
-    try:
-        # Initialize the WebDriver
-        # Known Issue: Apparently there's a known issue with the Chrome webdriver. If the user manually minimizes
-        # the browser window while the script is running it causes the driver to lose focus or fail to interact with
-        # the page elements properly.  Firefox doesn't have this problem.  The workaround is to run in headless mode,
-        # as shown below.
-        print ("Initializing LibbyApp.")
+
+# Initialize the WebDriver
+def startup():
+    # Known Issue: Apparently there's a known issue with the Chrome webdriver. If the user manually minimizes
+    # the browser window while the script is running it causes the driver to lose focus or fail to interact with
+    # the page elements properly.  Firefox doesn't have this problem.  The workaround is to run in headless mode,
+    # as shown below.
+    print ("Initializing webdriver.")
+    # Attempt to initialize the driver using a timeout decorator
+    @timeout_decorator.timeout(5) # Set a timeout of 5 seconds
+    def initialize_driver():
         from selenium.webdriver.chrome.options import Options as ChromeOptions
         options = ChromeOptions()
         options.add_argument("--headless")
-        driver = webdriver.Chrome(options=options)
-        do_login_steps(driver)
+        web = webdriver.Chrome(options=options)
+        return web
+
+    try:
+        return initialize_driver()
+    except timeout_decorator.timeout_decorator.TimeoutError:
+        print("Webdriver initialization timed out.")
+        print("Please ensure that the required web browser is installed.")
+        terminate()
+    except NoSuchDriverException as ex:
+        print("Unable to find required browser.")
+        print("Please ensure that the required web browser is installed.")
+        terminate()        
+    except Exception as e:
+        abnormal_exit(e)
+
+# Entry point for the application
+if __name__ == "__main__":
+    try:
+        driver = startup()
+        do_login_steps()
         # Get user's book choice
-        book_divs, choice = choose_book(driver)
+        book_divs, choice = choose_book()
         book_name = book_divs[choice - 1].find_element(By.CLASS_NAME, "title-tile-title").text
         # Hunt down the URL of the book
         deweyURL, cookie = obtain_book_url(book_divs, choice)
@@ -486,6 +513,7 @@ if __name__ == "__main__":
         print (f"Ready to fetch audio book {book_name}.")
         fetch_audio_files(book_title, deweyURL, cookie)
         print ("That's all Folks!")
-        driver.quit()
+        terminate()
     except Exception as e:
         abnormal_exit(e)
+

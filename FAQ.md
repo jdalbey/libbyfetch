@@ -15,6 +15,11 @@
   - **Answer:** See the list below.
 
 
+* `Unable to find required browser.`
+* `Please ensure that the required web browser is installed.`  
+Failed to find the required web browser installed on the system. (See Prerequisites in README.)
+
+
 * `Missing or malformed configuration file`
 * `Malformed configuration file`  
 Couldn't read the configuration file data. Check that the file is formatted correctly as described above.

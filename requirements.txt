@@ -4,3 +4,4 @@ pycurl==7.45.3
 selenium==4.26.1
 selenium-wire==5.1.0
 setuptools==75.5.0
+timeout-decorator==0.5.0

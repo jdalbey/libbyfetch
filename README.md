@@ -34,9 +34,9 @@ The purpose of this program is not to circumvent library policies or DRM constra
 ### Configuration File
 You must edit the configuration file named "`library_card_config.txt`" to provide your own library card information.
 The file is plain text and should contain two or three values separated by commas with no spaces.
-Example:   `sfpl,12341234123412,4321`
-The first field is the library abbreviation (see above).
-The second field is your library card number.
+Example:   `sfpl,12341234123412,4321`  
+The first field is the library abbreviation (see above).  
+The second field is your library card number.  
 The third field is your PIN (or password). If your library doesn't require a PIN omit this field.
 
 ## Installation (Linux)
