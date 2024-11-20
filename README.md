@@ -1,7 +1,8 @@
 # Libby Fetch
 
 Libby Fetch is a program for downloading MP3 audiobooks from libbyapp.com website
-
+### Warning
+Several users have reported that after using this program their library card can no longer access materials they have on loan through the Libby App. For example, issue #19. _Use this program at your own risk!_  
 ## Features
 1. The program will signin to the LibbyApp.com website using the user's library card.
 2. The program will display a list of current audiobooks on loan
@@ -99,6 +100,12 @@ Here are the detailed steps, using pip.
 To run the program, execute the following command:
 
   `python3 libbyfetch.py`
+
+When complete the MP3 files will appear in the current directory.
+
+Optional:  
+  `python3 set_ID3_tags.py`  
+This program will set the MP3 filename into the title field of the ID3 tag for each MP3 file in the current directory.  This is helpful as the ID3 tag provides the data most MP3 players display for the book title. 
 
 ## Example
 ```%python libbyfetch.py
