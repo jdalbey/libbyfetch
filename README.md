@@ -19,7 +19,7 @@ The purpose of this program is not to circumvent library policies or DRM constra
 ## Prerequisites:
 * Python 3.7 or higher. Check your Python version:
      `python3 --version`
-* Chrome (or Chromium) web browser.
+* Firefox or Chrome (or Chromium) web browser.
 * An Overdrive account at a participating library.
 * An audiobook that has been checked out from your library and appears in your Overdrive account on the Loans page.
 * Your library card number (and if required, your PIN) that allows you to sign in to Overdrive.
