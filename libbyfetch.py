@@ -6,7 +6,7 @@
 
 # pip install selenium selenium-wire pycurl
 # Note: must uninstall Blinker 1.9 and install v1.7
-import time, os, pycurl, traceback
+import time, os, pycurl, traceback, certifi
 from selenium.common import WebDriverException, TimeoutException, NoSuchElementException, NoSuchDriverException
 from seleniumwire import webdriver
 from selenium.webdriver.common.by import By
@@ -91,8 +91,8 @@ def do_pycurl_cmd(book_title, deweyURL, cookie):
     ])
     # Set cookies as a single string (format: "cookie1=value1; cookie2=value2")
     c.setopt(c.COOKIE, cookie)
-    # Specify the path to your CA certificates bundle
-    c.setopt(c.CAINFO, '/etc/ssl/certs/ca-certificates.crt')
+    # Use certifi's CA bundle for cross-platform SSL verification
+    c.setopt(c.CAINFO, certifi.where())
 
     # Save the output retrieved by cURL to a file
     with open(book_title, 'wb') as f:
