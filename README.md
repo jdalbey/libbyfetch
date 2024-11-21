@@ -66,7 +66,7 @@ Install the required Python modules:
 
 ## Installation (Windows)
 
-Step 1: [Install Python](<script src="https://gist.github.com/jdalbey/3de4fed637338ed8c5049a3253881a4d.js"></script>) (if necessary)
+Step 1: [Install Python](https://gist.github.com/jdalbey/3de4fed637338ed8c5049a3253881a4d) (if necessary)
 
 Step 2: Download the Latest Release
   * Visit the [Releases](https://github.com/jdalbey/libbyfetch/releases) page.
