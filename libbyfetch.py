@@ -13,7 +13,6 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.keys import Keys
-import timeout_decorator
 
 
 #global variable for webdriver
@@ -468,35 +467,26 @@ def do_login_steps():
         print (type(e))
         abnormal_exit(e)
 
-
-# Initialize the WebDriver
 def startup():
+    """ Initialize the WebDriver
     # Known Issue: Apparently there's a known issue with the Chrome webdriver. If the user manually minimizes
     # the browser window while the script is running it causes the driver to lose focus or fail to interact with
     # the page elements properly.  Firefox doesn't have this problem.  The workaround is to run in headless mode,
     # as shown below.
+    """
     print ("Initializing webdriver.")
-    # Attempt to initialize the driver using a timeout decorator
-    @timeout_decorator.timeout(5) # Set a timeout of 5 seconds
-    def initialize_driver():
+
+    # Assumes Chrome/Chromium is installed
+    web = None
+    try:
         from selenium.webdriver.chrome.options import Options as ChromeOptions
         options = ChromeOptions()
         options.add_argument("--headless")
         web = webdriver.Chrome(options=options)
-        return web
-
-    try:
-        return initialize_driver()
-    except timeout_decorator.timeout_decorator.TimeoutError:
-        print("Webdriver initialization timed out.")
-        print("Please ensure that the required web browser is installed.")
-        terminate()
-    except NoSuchDriverException as ex:
-        print("Unable to find required browser.")
-        print("Please ensure that the required web browser is installed.")
-        terminate()        
-    except Exception as e:
-        abnormal_exit(e)
+    except WebDriverException as e:
+        print(f"WebDriver error: {e}")
+        exit()
+    return web
 
 # Entry point for the application
 if __name__ == "__main__":

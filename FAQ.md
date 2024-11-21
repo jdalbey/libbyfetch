@@ -7,7 +7,11 @@
 
 ### Installation
 - **1.** I'm getting this error `ModuleNotFoundError: No module named 'blinker._saferef'`
-  - ** Answer:** See the "Dependency note" in the README.
+  - **Answer:** See the "Dependency note" in the README.
+
+### Troubleshooting
+- **1.** Libby Fetch hangs after displaying "Initializing webdriver."
+  - **Answer:** Most likely it couldn't find an installed Chrome web browser. Currently Libby Fetch only works with Chrome so make sure that is installed in your system.
 
 ### Error Messages
 
