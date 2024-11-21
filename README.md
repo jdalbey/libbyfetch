@@ -54,8 +54,8 @@ Step 2: Download the Latest Release
 
 Step 3: Unzip the file:
 
-    unzip libbyfetch-1.0.2.zip
-    cd libbyfetch-1.0.2
+    unzip libbyfetch-x.x.x.zip
+    cd libbyfetch-x.x.x
 
 Step 4: Install Dependencies
 
@@ -74,8 +74,9 @@ Step 2: Download the Latest Release
 
 Step 3: Unzip the file
 
-Step 4: Install Dependencies (with pip)
-
+Step 4: Install Dependencies (with pip)  
+  * Using File Explorer navigate to the folder that was unzipped.  Right-click on the `libbyfetch-x.x.x` folder and choose "Open in Terminal".  
+  * Windows PowerShell opens. Enter:
 ```
 python -m pip install -r requirements.txt
 ```
