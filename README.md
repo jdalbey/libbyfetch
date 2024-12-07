@@ -1,4 +1,7 @@
-# Libby Fetch
+# This project is inactive.  
+The Libby servers changed their protocol and this program no longer functions. 
+
+## Libby Fetch
 
 Libby Fetch is a program for downloading MP3 audiobooks from libbyapp.com website
 ### Warning
